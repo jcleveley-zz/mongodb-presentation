@@ -194,7 +194,7 @@
       h2 {
         font-family: 'Droid Sans';
         color: black;
-        font-size: 20px;
+        font-size: 26px;
         padding: 0;
         margin: 15px 0 5px 0;
       }
@@ -445,15 +445,15 @@
 
 		table {
 		width:90%;
-		border-top:1px solid #e5eff8;
-		border-right:1px solid #e5eff8;
+		border-top:1px solid #c61800;
+		border-right:1px solid #c61800;
 		margin:1em auto;
 		border-collapse:collapse;
 	   }
 	   td, th {
 		color:#678197;
-		border-bottom:1px solid #e5eff8;
-		border-left:1px solid #e5eff8;
+		border-bottom:1px solid #c61800;
+		border-left:1px solid #c61800	;
 		padding:.3em 1em;
 		text-align:center;
 		font-size: 200%;
@@ -500,14 +500,15 @@
         </div>
 
         <div class="slide">
-	<header><span class="js">MongoDB</span> <h1>What problems does it solve?</h1></header>
+	<header><span class="js">MongoDB</span> <h1>How do we model the unknown?</h1></header>
 
           
            <section>  
-	       		<h2>How do we model the unkown</h2>
+	       		
               <ul class="summary">
-				<li>Wide rows</li>
-                <li>Entity-Attribute-Value (EAV)</li>
+				<li>Insanely wide rows</li>
+				<li>Table inheritance</li>
+				<li>Entity-Attribute-Value (EAV)</li>
               </ul>
           </section>
 
@@ -521,10 +522,10 @@
           <section>
 
 			<ul class="summary">
-            	<li>Flexible data structure - dynamically add attributes to documents</li>
-				<li>Makes it easier to scale - Auto sharding, replication</li>
-              	<li>More developer friendly - It's Easy!</li>
-                <li>Fast</li>
+            	<li><b>Flexible data structure</b> - dynamically add attributes to documents</li>
+				<li><b>Makes it easier to scale</b> - Auto sharding, replication</li>
+              	<li><b>Very developer friendly</b> - It's Easy!</li>
+                <li><b>Fast</b> - some say <b>x2 faster</b></li>
 				<li>A middle ground between RDBMS and Key/Value stores</li>
 			</ul>
  			
@@ -569,7 +570,7 @@ $db->people-><b>save</b>(array( 'name' => 'John Major'));
 						<pre>
 $cursor = $db->people->find(); print_r(iterator_to_array($cursor));
 
-Array ( [4cbdffdae84ded424f000000] =>
+Array ( [dh58fh39fjef000000] =>
  Array ( [_id] => MongoId Object [name] => John Major ) )
 						</pre>	
 		          </section>
@@ -577,6 +578,80 @@ Array ( [4cbdffdae84ded424f000000] =>
 
 		        </div>
    
+<div class="slide">
+	<header><span class="js">ODM</span> <h1>MongoDB with Doctrine2</h1></header>
+	<section>
+		<pre>
+
+/**
+* @Document(
+* db="meetup",
+* collection="people",
+* )
+*/
+
+class <b>Person</b>
+{
+  /** @Id */
+  protected <b>$id</b>;
+
+  /** @String */
+  protected <b>$name</b>;
+
+  /** @Hash */
+  private <b>$emails</b> = array();
+
+  /** @Boolean */
+  protected <b>$active</b>;
+
+}
+		</pre>	
+	</section>
+</div>
+
+<div class="slide">
+	<header><span class="js">ODM</span> <h1>Embed object</h1></header>
+
+	<section>
+		<pre>
+/** @Document */
+class <b>Person</b>
+{
+    // ...
+
+    /** @EmbedMany(targetDocument="Address") */
+    private <b>$phonenumbers</b> = array();
+
+}
+
+/** @EmbeddedDocument */
+class <b>Address</b>
+{
+    /** @String */
+    protected <b>$town</b>;
+    // ...
+}
+
+		</pre>	
+  </section>
+</div>
+
+<div class="slide">
+         <header><span class="js">ODM</span> <h1>Creating / Saving objects</h1></header>
+
+         <section>
+			<pre>
+$john = new Person(); 
+$john->name = 'John Major'; 
+$john->emails[] = 'john.major@gmail.com'; 
+$john->adress[] = $anAddressObj; 
+
+$documentManager->persist($john); 
+$documentManager->flush(); 
+		</pre>	
+  </section>
+</div>
+
 
       </div> <!-- slides -->
 
